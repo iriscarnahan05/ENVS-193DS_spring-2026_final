@@ -139,6 +139,13 @@ AICc(
   arrange(AICc)
 ```
 
+```{r}
+#| label: model-summary
+
+summary(nest_mod2)
+```
+
+
 The best model as determined by Akaike's Information Criterion (AIC) is the one where both predictor variables of ant species and tree height (cm) had an interactive effect on the presence of a nest. Accounting for both predictive variables and the potential effects they have on each other best predicts the data outcome.
 
 ## g. Check the diagnostics
@@ -159,7 +166,6 @@ pred <- ggpredict(nest_mod2,
           terms = c("height_cm",
                     "ant_species"))
 ```
-
 
 ```{r}
 #| label: model-preds-visualization
@@ -211,7 +217,28 @@ ggpredict(nest_mod2,
                     "ant_species")) # differentiates between ant species
 ```
 
-
 ## k. Interpret your results
 
+Height in the trees (cm) and ant species interact to predict the probability of bird nesting. As height increases, the probability of observing a nest increases. Additionally, the effect of height on nesting probability is stronger for *C. nigriceps* than either *C. mimosae* or *C. sjostedti*.
+
+These relationships can be justified biologically speaking because birds mostly nest in trees with more aggressive ant populations (*C. nigriceps* and *C. mimosae*) to reduce predation of eggs and conceal them in denser cover, and higher up to avoid ground-dwelling predators such as snakes and raccoons.
+
+At 600cm, the probability of nesting is 0.20 (95% CI: [0.00, 0.99]) for trees with *C. sjostedti*, 0.74 (95% CI: [0.48, 0.90]) for trees with *C. mimosae*, and 1.00 (95% CI: [1.00, 1.00]) for trees with*C. nigriceps*.
+
 # Problem 3
+
+## a.
+
+## b.
+
+## c. 
+
+## d. 
+
+## e.
+
+## f.
+
+## g.
+
+
