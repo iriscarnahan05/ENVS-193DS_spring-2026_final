@@ -89,11 +89,13 @@ Ant species are shown to be a categorical variable, as shown at the end of the f
 #| label: interaction-term
 
 # no interaction
-nest_mod1 <- lm(case_control ~ ant_species + height_cm,
-             data = nests_clean)
+nest_mod1 <- glm(case_control ~ ant_species + height_cm,
+             data = nests_clean,
+             family = "binomial")
 # interaction
-nest_mod2 <- lm(case_control ~ ant_species * height_cm,
-                data = nests_clean)
+nest_mod2 <- glm(case_control ~ ant_species * height_cm,
+                data = nests_clean,
+                family = "binomial")
 ```
 
 ## e. Run the models
@@ -102,20 +104,20 @@ nest_mod2 <- lm(case_control ~ ant_species * height_cm,
 #| label: model-fitting
 
 # model 0: null model
-model0 <- lm(
+model0 <- glm(
   case_control ~ 1, # formula: no predictors
   data = nests_clean) # clean data frame
 # model 1: all predictors
-model1 <- lm(
+model1 <- glm(
   case_control ~ ant_species + height_cm,
   data = nests_clean)
 # model 2: ant species only
-model2 <- lm(
+model2 <- glm(
   case_control ~ ant_species,
   data = nests_clean
 )
 # model 4: tree height only
-model3 <- lm(
+model3 <- glm(
   case_control ~ height_cm,
   data = nests_clean
 )
@@ -141,13 +143,74 @@ The best model as determined by Akaike's Information Criterion (AIC) is the one 
 
 ## g. Check the diagnostics
 
-
+```{r}
+#| label: check-diagnostics
+# displaying plots in 2 by 2 grid
+par(mfrow = c(2, 2))
+# generating diagnostic plots
+plot(nest_mod2)
+```
 
 ## h. Visualize the model predictions 
 
+```{r}
+#| label: create-model-preds
+pred <- ggpredict(nest_mod2,
+          terms = c("height_cm",
+                    "ant_species"))
+```
+
+
+```{r}
+#| label: model-preds-visualization
+
+ggplot(data = nests_clean,
+       aes(x = height_cm,
+           y = case_control)) +
+  geom_point(aes(color = ant_species),
+             shape = 21) +
+  geom_line(data = pred,
+            aes(x = x,
+                y = predicted,
+                color = group),
+            linewidth = 2) +
+  geom_ribbon(data = pred,
+              aes(x = x, 
+                  y = predicted,
+                  ymin = conf.low,
+                  ymax = conf.high,
+                  fill = group),
+              alpha = 0.1) +
+  facet_wrap(~ group,
+             labeller = labeller(
+               group = c(RRB = "C. mimosae",
+                               AB = "C. sjostedti",
+                               BBR = "C. nigriceps")
+             )) +
+  scale_color_manual(values = c("RRB" = "coral",
+                                "AB" = "darkolivegreen1",
+                                "BBR" = "deeppink2")) +
+  scale_x_continuous(breaks = c(100, 200, 300, 400, 500, 600)) + 
+  labs(x = "Height (cm)",
+       y = "Probability of Birds Nests") +
+  theme_classic() +
+  theme(legend.position = "none")
+```
+
 ## i. Write a caption for your figure
 
+**Figure 1. The higher up in the trees with *C. nigriceps* ant populations, the more likely birds will nest.** Each colored line represents the probability of finding a birds nest at a given height (cm). Each colors and graph differentiates the ant population coexisting on the observed trees(green: *C. sjostedti*, orange: *C. mimosae*, pink: *C. nigriceps*), and the faded bands, or ribbons, around the lines represent the 95% confidence interval, or the precision of the predictions. 
+
 ## j. Calculate model predictions
+
+```{r}
+#| label: applied-model-predictions
+# predict occurrence of nests using model 2
+ggpredict(nest_mod2,
+          terms = c("height_cm [600]", # at 600 cm
+                    "ant_species")) # differentiates between ant species
+```
+
 
 ## k. Interpret your results
 
