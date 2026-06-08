@@ -170,16 +170,24 @@ pred <- ggpredict(nest_mod2,
 ```{r}
 #| label: model-preds-visualization
 
+# base layer: ggplot
 ggplot(data = nests_clean,
-       aes(x = height_cm,
-           y = case_control)) +
+       aes(x = height_cm, # x: height of trees
+           y = case_control)) + #y: nesting probability
+  # first layer: geom point
+  # change shape to open circles
   geom_point(aes(color = ant_species),
              shape = 21) +
+  # second layer: geom line
+  # color based upon ant species
+  # adjust line width
   geom_line(data = pred,
             aes(x = x,
                 y = predicted,
                 color = group),
             linewidth = 2) +
+  # third layer: geom ribbon
+  # change transparency
   geom_ribbon(data = pred,
               aes(x = x, 
                   y = predicted,
@@ -187,19 +195,25 @@ ggplot(data = nests_clean,
                   ymax = conf.high,
                   fill = group),
               alpha = 0.1) +
+  # group tables based on ant species and relabel
   facet_wrap(~ group,
              labeller = labeller(
                group = c(RRB = "C. mimosae",
                                AB = "C. sjostedti",
                                BBR = "C. nigriceps")
              )) +
+  # change colors of graph lines depending on ant species
   scale_color_manual(values = c("RRB" = "coral",
                                 "AB" = "darkolivegreen1",
                                 "BBR" = "deeppink2")) +
+  # break up lines by 100, not 200
   scale_x_continuous(breaks = c(100, 200, 300, 400, 500, 600)) + 
+  # relabel x- and y-axes
   labs(x = "Height (cm)",
        y = "Probability of Birds Nests") +
+  # change theme to `classic`
   theme_classic() +
+  # remove legend
   theme(legend.position = "none")
 ```
 
@@ -229,7 +243,17 @@ At 600cm, the probability of nesting is 0.20 (95% CI: [0.00, 0.99]) for trees wi
 
 ## a.
 
+In my homework 2 visualization, I used a bar graph to represent the time I spent biking each day of the week (only one point at this point in time). In my affective visualization, the length of the bike ride was not determined by a bar chart, but instead is shown by a certain scribble design. I did not account of number of per day in my final affective visual, aside from a mention of my typical schedule.
+
+I still used the variables time spent biking (min) and days of the week in my affective visualization, and included the same color scheme of pink and blue. In terms of aesthetics, there are no similarities between the graphs.
+
+Given that I only had one point when making the homework 2 visualization, the provided points were also the means and medians. However, one shift that I generally noticed is that I spent more time biking on campus on Mondays as classes were cancelled and I had to miss class for sickness, even though I had many more classes on Tuesday, Wednesday, and Thursday. So, there was a shift through time in terms of daily biking trends.
+
+I had two ideas for my affective visual -- one entailing highlighting the times of day when I was biking the most on a loopy but linear model, and the other which I ultimately decided to pursue, a radial graph that visualized the time that I spent biking as well as the time of day. While I had proposed the first one to Jared and Steven, they both ultimately decided the second idea was better to address my research question. I took their advice and created an affective visual that shows the day I biked, how long I biked for, what time of day I biked, and how these changed over the five weeks of data recording.
+
 ## b.
+
+
 
 ## c. 
 
