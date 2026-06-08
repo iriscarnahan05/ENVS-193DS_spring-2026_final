@@ -6,3 +6,20 @@ format: pdf
 ---
 # Link to GitHub repo
 https://github.com/iriscarnahan05/ENVS-193DS_spring-2026_final
+
+# Set-up tasks
+
+```{r}
+#| label: reading-in-packages
+
+library(tidyverse) # general use
+library(here) # cleaning data frames
+library(janitor) # file/folder organization
+library(readxl) # reading .xlsx files
+library(ggeffects) # calculating the data
+library(dplyr)
+library(forcats)
+# reading in `nest_data_final` csv file
+nest_data <- read.csv(here("data", "nest_data_final.csv"))
+```
+
