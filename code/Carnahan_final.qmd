@@ -23,6 +23,7 @@ library(MuMIn)
 library(DHARMa)
 # reading in `nest_data_final` csv file
 nest_data <- read.csv(here("data", "nest_data_final.csv"))
+bike_data <- read.csv(here("data", "biking_data.csv"))
 ```
 
 # Problem 1
@@ -241,7 +242,7 @@ At 600cm, the probability of nesting is 0.20 (95% CI: [0.00, 0.99]) for trees wi
 
 # Problem 3
 
-## a.
+## a. Comparing visualizations
 
 In my homework 2 visualization, I used a bar graph to represent the time I spent biking each day of the week (only one point at this point in time). In my affective visualization, the length of the bike ride was not determined by a bar chart, but instead is shown by a certain scribble design. I did not account of number of per day in my final affective visual, aside from a mention of my typical schedule.
 
@@ -251,18 +252,48 @@ Given that I only had one point when making the homework 2 visualization, the pr
 
 I had two ideas for my affective visual -- one entailing highlighting the times of day when I was biking the most on a loopy but linear model, and the other which I ultimately decided to pursue, a radial graph that visualized the time that I spent biking as well as the time of day. While I had proposed the first one to Jared and Steven, they both ultimately decided the second idea was better to address my research question. I took their advice and created an affective visual that shows the day I biked, how long I biked for, what time of day I biked, and how these changed over the five weeks of data recording.
 
-## b.
+## b. Designing an analysis
+
+I could use a Kruskal-Wallis test to compare the median amount of time I spend biking per day dependent on the number of classes I have per day. 
+
+A Kruskal-Wallis is appropriate, as I am comparing the median biking time spent across four levels that stand for number of classes per day. This would adequately address my question: How does the number of classes I have per day affect the amount of time I spend on average biking?
+
+The variables that I would use in this analysis are time spent biking (min), which is continuous and the response variable, and number of classes per day, which would be categorical and the predictor variable.
+
+## c. Check any assumptions and run your analysis
+
+Assumptions for a Kruskal-Wallis test, as observations were independent from each other, the independent variable is categorical, and the dependent variable is continuous.
+
+```{r}
+#| label: cleaning-personal-data
+
+# cleaning data to make names shorter and lowercase
+bike_clean <- bike_data |> 
+  rename(biking_time = Time.Spent.Biking..min.,
+         classes = Number.of.Classes.Per.Day)
+```
 
 
+```{r}
+#| label: kruskal-wallis-test
 
-## c. 
+# running kruskal-wallis test
+kruskal.test(biking_time ~ factor(classes), data = bike_clean)
+```
 
-## d. 
+```{r}
+#| label: effect-size
 
-## e.
+# determining effect size amongst biking data
+rstatix::kruskal_effsize(biking_time ~ factor(classes), data = bike_clean)
+```
 
-## f.
+## d. Create visualization
 
-## g.
+## e. Write caption
+
+## f. Write about your results
+
+## g. Sharing your affective visualization
 
 
