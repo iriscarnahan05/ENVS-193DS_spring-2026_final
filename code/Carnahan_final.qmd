@@ -107,11 +107,11 @@ Ant species are shown to be a categorical variable, as shown at the end of the f
 # no interaction
 nest_mod1 <- glm(case_control ~ ant_species + height_cm,
              data = nests_clean,
-             family = "binomial")
+             family = "binomial") # indication of glm test type
 # interaction
 nest_mod2 <- glm(case_control ~ ant_species * height_cm,
                 data = nests_clean,
-                family = "binomial")
+                family = "binomial") # indication of glm test type
 ```
 
 ```{r}
