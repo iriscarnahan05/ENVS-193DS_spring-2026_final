@@ -12,9 +12,9 @@ Included as well is an example of running Kruskal-Wallis tests and creating repr
 
 ## Data and file information
 
-│   .gitignore
-│   ENVS-193DS_spring-2026_final.Rproj
-│   README.md
+├───.gitignore
+├───ENVS-193DS_spring-2026_final.Rproj
+├───README.md
 │
 ├───code
 │       Carnahan_final.pdf
