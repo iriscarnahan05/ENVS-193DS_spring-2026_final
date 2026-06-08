@@ -23,3 +23,69 @@ library(forcats)
 nest_data <- read.csv(here("data", "nest_data_final.csv"))
 ```
 
+# Problem 1
+
+## a. Transparent statistical methods
+
+In part 1, they used a binomial generalized linear model (GLM), or a logistic regression. In part 2, they used a chi-squared test.
+
+## b. Suggestions for rewriting
+
+In the San Francisco Bay, the distance from the water edge tends to predict the likelihood of microhabitat use by American Avocets.
+
+Noticeably, certain shorebirds have shown preference for different habitat types in the San Francisco Bay.
+
+## c. Further analysis
+
+The amount of restored native plant cover (measured in % cover) could influence the probability of American Avocet microhabitat use, because they tend to prefer wide-open areas rather than highly vegetated ones in order to forage and feed. Measuring in percentage makes this variable continuous, and this data could be collected via quadrat estimates.
+
+# Problem 2
+
+## a. Clean and wrangle
+
+```{r}
+#| label: cleaning-data
+# creating data frame called `nests_clean`
+nests_clean <- nest_data |> 
+  # selecting columns of interest
+  select(height_cm, bird_species, ant_species) |> 
+  # filtering to only include ant species AB, RRB, and BBR
+  filter(ant_species == "AB" |
+         ant_species == "RRB" |
+         ant_species == "BBR") |> 
+  # reordering ant species
+  mutate(ant_species = factor(ant_species),
+         ant_species = fct_relevel(
+         ant_species,
+         "AB", "RRB", "BBR")) |> 
+  # creating new column to store scientific names
+  mutate(scientific_name = case_when(
+    ant_species == "AB" ~ "C. sjostedti",
+    ant_species == "RRB" ~ "C. mimosae",
+    ant_species == "BBR" ~ "C. nigriceps",
+    # fills in NA to match with ant species NA
+    TRUE ~ NA_character_
+  ))
+```
+
+## b. Response variable
+
+## c. Purpose of study
+
+## d. Table of models
+
+## e. Run the models
+
+## f. Select the best model
+
+## g. Check the diagnostics
+
+## h. Visualize the model predictions 
+
+## i. Write a caption for your figure
+
+## j. Calculate model predictions
+
+## k. Interpret your results
+
+
