@@ -1,8 +1,13 @@
 ---
-title: "ENVS-193DS_Final"
+title: "ENVS 193DS Final"
 author: "Iris Carnahan"
 date: "2026-06-07"
-format: pdf
+format: 
+  pdf:
+    toc: true # display table of contents
+execute:
+  message: false # no messages show up
+  warning: false # warnings don't show up
 ---
 # Link to GitHub repo
 https://github.com/iriscarnahan05/ENVS-193DS_spring-2026_final
@@ -30,7 +35,7 @@ bike_data <- read.csv(here("data", "biking_data.csv"))
 
 ## a. Transparent statistical methods
 
-In part 1, they used a binomial generalized linear model (GLM), or a logistic regression. In part 2, they used a chi-squared test.
+In part 1, they used a **binomial generalized linear model (GLM), or a logistic regression**. In part 2, they used a **chi-squared test**.
 
 ## b. Suggestions for rewriting
 
@@ -86,6 +91,16 @@ Ant species are shown to be a categorical variable, as shown at the end of the f
 
 ## d. Table of models
 
+| Model number | Ant Species | Tree Height | Interaction |  
+|--------------|:-----------:|:-----------:|:-----------:|
+| 0            |             |             |             |
+| 1            |      X      |      X      |             | 
+| 2            |      X      |      X      |      X      |
+| 3            |      X      |             |             |
+| 4            |             |      X      |             |
+
+## e. Run the models
+
 ```{r}
 #| label: interaction-term
 
@@ -99,8 +114,6 @@ nest_mod2 <- glm(case_control ~ ant_species * height_cm,
                 family = "binomial")
 ```
 
-## e. Run the models
-
 ```{r}
 #| label: model-fitting
 
@@ -112,13 +125,14 @@ model0 <- glm(
 model1 <- glm(
   case_control ~ ant_species + height_cm,
   data = nests_clean)
-# model 2: ant species only
-model2 <- glm(
+# model 3: ant species only
+# not model 2 because that was already used above
+model3 <- glm(
   case_control ~ ant_species,
   data = nests_clean
 )
 # model 4: tree height only
-model3 <- glm(
+model4 <- glm(
   case_control ~ height_cm,
   data = nests_clean
 )
@@ -132,8 +146,8 @@ model3 <- glm(
 AICc(
   model0,
   model1,
-  model2,
   model3,
+  model4,
   nest_mod2
 ) |> 
   # arranging models in order of AIC
@@ -142,30 +156,32 @@ AICc(
 
 ```{r}
 #| label: model-summary
-
+# summarizing model with interaction
 summary(nest_mod2)
 ```
-
 
 The best model as determined by Akaike's Information Criterion (AIC) is the one where both predictor variables of ant species and tree height (cm) had an interactive effect on the presence of a nest. Accounting for both predictive variables and the potential effects they have on each other best predicts the data outcome.
 
 ## g. Check the diagnostics
 
 ```{r}
-#| label: check-diagnostics
-# displaying plots in 2 by 2 grid
-par(mfrow = c(2, 2))
-# generating diagnostic plots
-plot(nest_mod2)
+#| label: DHARMa-check-diagnostics
+#| fig-width: 10
+#| fig-height: 10
+# creating diagnostic plots
+plot(simulateResiduals(nest_mod2))
 ```
 
 ## h. Visualize the model predictions 
 
 ```{r}
 #| label: create-model-preds
+# creating ggpredict data frame
 pred <- ggpredict(nest_mod2,
           terms = c("height_cm",
                     "ant_species"))
+# renaming `group` as `ant_species` for uniformity
+pred <- rename(pred, "ant_species" = "group")
 ```
 
 ```{r}
@@ -185,26 +201,31 @@ ggplot(data = nests_clean,
   geom_line(data = pred,
             aes(x = x,
                 y = predicted,
-                color = group),
+                color = ant_species),
             linewidth = 2) +
   # third layer: geom ribbon
   # change transparency
   geom_ribbon(data = pred,
-              aes(x = x, 
-                  y = predicted,
+              aes(x = x,
                   ymin = conf.low,
                   ymax = conf.high,
-                  fill = group),
-              alpha = 0.1) +
+                  fill = ant_species),
+              alpha = 0.4,
+              # not adopting aesthetic from ggplot
+              inherit.aes = FALSE) +
   # group tables based on ant species and relabel
-  facet_wrap(~ group,
+  facet_wrap(~ ant_species,
              labeller = labeller(
-               group = c(RRB = "C. mimosae",
+               ant_species = c(RRB = "C. mimosae",
                                AB = "C. sjostedti",
                                BBR = "C. nigriceps")
              )) +
   # change colors of graph lines depending on ant species
   scale_color_manual(values = c("RRB" = "coral",
+                                "AB" = "darkolivegreen1",
+                                "BBR" = "deeppink2")) +
+  # change the colors of ribbons
+  scale_fill_manual(values = c("RRB" = "coral",
                                 "AB" = "darkolivegreen1",
                                 "BBR" = "deeppink2")) +
   # break up lines by 100, not 200
@@ -215,12 +236,17 @@ ggplot(data = nests_clean,
   # change theme to `classic`
   theme_classic() +
   # remove legend
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  # remove color guides
+  guides(
+    color = "none",
+    fill = "none"
+  )
 ```
 
 ## i. Write a caption for your figure
 
-**Figure 1. The higher up in the trees with *C. nigriceps* ant populations, the more likely birds will nest.** Each colored line represents the probability of finding a birds nest at a given height (cm). Each colors and graph differentiates the ant population coexisting on the observed trees(green: *C. sjostedti*, orange: *C. mimosae*, pink: *C. nigriceps*), and the faded bands, or ribbons, around the lines represent the 95% confidence interval, or the precision of the predictions. 
+**Figure 1. The higher up in the trees with *C. nigriceps* ant populations, the more likely birds will nest.** Each colored line represents the probability of finding a birds nest at a given height (cm). Each colors and graph differentiates the ant population coexisting on the observed trees(green: *C. sjostedti*, orange: *C. mimosae*, pink: *C. nigriceps*), and the faded bands, or ribbons, around the lines represent the 95% confidence interval, or the precision of the predictions. Data extracted from: Lujan, E., Nielsen, R., Short, Z., Wicks, S., Nderitu Watetu, W., Malingati Khasoha, L., Palmer, T. M., Goheen, J. R., & Alston, J. M. (2023). Data, code, and metadata for: Symbiotic acacia ants drive nesting behavior by birds in an African savanna [Data set]. *Zenodo.* https://doi.org/10.5281/zenodo.8373322.
 
 ## j. Calculate model predictions
 
@@ -306,9 +332,9 @@ ggplot(data = bike_clean,
                                 "2" = "gold",
                                 "3" = "firebrick1",
                                 "4" = "lightsalmon3")) +
-  labs(x = "Classes per Day (#/day)",
-       y = "Biking Time (min)",
-       title = "Biking does differ based on number of classes") +
+  labs(x = "Classes per Day",
+       y = "Biking Time (min/day)",
+       title = "Biking does not greatly differ based on number of classes") +
   # change theme to `classic`
   theme_classic() +
   # remove legend
@@ -317,8 +343,12 @@ ggplot(data = bike_clean,
 
 ## e. Write caption
 
+**Figure 2. The average amount of time spent biking per day does not differ depending on the number of classes attended.** The boxplots represent a median amount of minutes spent biking per day given the number of classes over five weeks. This also displays the interquartile range (IQR) and the top and bottom of the box, and outliers of the data shown as opaque points that are not shown in the whiskers. The colors differentiate the number of classes had in a given day (1: orange, 2: yellow, 3: red, 4: orange-brown).
+
 ## f. Write about your results
+
+We found no significant difference ($\eta$^2^ = -0.005) in median biking per day taking into account number of classes (Kruskal-Wallis test, $\chi$^2^(3) = 2.9042, p = 0.41, $\alpha$ = 0.05). From this point, we fail to reject the hypothesis that the number of classes had per day affects the amount of time I spend biking per day.
 
 ## g. Sharing your affective visualization
 
-
+I attended workshop 10 and displayed my affective visual with an artist statement.
