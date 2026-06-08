@@ -273,7 +273,6 @@ bike_clean <- bike_data |>
          classes = Number.of.Classes.Per.Day)
 ```
 
-
 ```{r}
 #| label: kruskal-wallis-test
 
@@ -289,6 +288,32 @@ rstatix::kruskal_effsize(biking_time ~ factor(classes), data = bike_clean)
 ```
 
 ## d. Create visualization
+
+```{r}
+#| label: biking-figure
+
+ggplot(data = bike_clean,
+       aes(x = factor(classes),
+           y = biking_time,
+           color = factor(classes))) +
+  geom_boxplot() +
+  geom_jitter(height = 0,
+              width = 0.2,
+              size = 2,
+              alpha = 0.7,
+              shape = 21) +
+  scale_color_manual(values = c("1" = "darkorange",
+                                "2" = "gold",
+                                "3" = "firebrick1",
+                                "4" = "lightsalmon3")) +
+  labs(x = "Classes per Day (#/day)",
+       y = "Biking Time (min)",
+       title = "Biking does differ based on number of classes") +
+  # change theme to `classic`
+  theme_classic() +
+  # remove legend
+  theme(legend.position = "none")
+```
 
 ## e. Write caption
 
