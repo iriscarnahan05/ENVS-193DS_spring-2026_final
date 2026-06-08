@@ -19,6 +19,8 @@ library(readxl) # reading .xlsx files
 library(ggeffects) # calculating the data
 library(dplyr)
 library(forcats)
+library(MuMIn)
+library(DHARMa)
 # reading in `nest_data_final` csv file
 nest_data <- read.csv(here("data", "nest_data_final.csv"))
 ```
@@ -48,7 +50,7 @@ The amount of restored native plant cover (measured in % cover) could influence 
 # creating data frame called `nests_clean`
 nests_clean <- nest_data |> 
   # selecting columns of interest
-  select(height_cm, bird_species, ant_species) |> 
+  select(height_cm, case_control, ant_species) |> 
   # filtering to only include ant species AB, RRB, and BBR
   filter(ant_species == "AB" |
          ant_species == "RRB" |
@@ -77,17 +79,69 @@ The response variable is the occurrence of a bird nest of any species. The 0 ind
 
 ## c. Purpose of study
 
-Tree height is a continuous variable measured in meters. The research shows in the second paragraph of the results section that the taller the tree, the more likely  it is that a bird will have nested in in it.
+Tree height is a continuous variable measured in centimeters. The research shows in the second paragraph of the results section that the taller the tree, the more likely  it is that a bird will have nested in in it.
 
 Ant species are shown to be a categorical variable, as shown at the end of the first paragraph in the Methods section of the research paper. The third paragraph of the results showed that trees inhabited by *C. mimosae* and *C. nigriceps* were more likely to contain nests.
 
 ## d. Table of models
 
+```{r}
+#| label: interaction-term
+
+# no interaction
+nest_mod1 <- lm(case_control ~ ant_species + height_cm,
+             data = nests_clean)
+# interaction
+nest_mod2 <- lm(case_control ~ ant_species * height_cm,
+                data = nests_clean)
+```
+
 ## e. Run the models
+
+```{r}
+#| label: model-fitting
+
+# model 0: null model
+model0 <- lm(
+  case_control ~ 1, # formula: no predictors
+  data = nests_clean) # clean data frame
+# model 1: all predictors
+model1 <- lm(
+  case_control ~ ant_species + height_cm,
+  data = nests_clean)
+# model 2: ant species only
+model2 <- lm(
+  case_control ~ ant_species,
+  data = nests_clean
+)
+# model 4: tree height only
+model3 <- lm(
+  case_control ~ height_cm,
+  data = nests_clean
+)
+```
 
 ## f. Select the best model
 
+```{r}
+#| label: calculating_aic
+# calculating AIC
+AICc(
+  model0,
+  model1,
+  model2,
+  model3,
+  nest_mod2
+) |> 
+  # arranging models in order of AIC
+  arrange(AICc)
+```
+
+The best model as determined by Akaike's Information Criterion (AIC) is the one where both predictor variables of ant species and tree height (cm) had an interactive effect on the presence of a nest. Accounting for both predictive variables and the potential effects they have on each other best predicts the data outcome.
+
 ## g. Check the diagnostics
+
+
 
 ## h. Visualize the model predictions 
 
@@ -97,4 +151,4 @@ Ant species are shown to be a categorical variable, as shown at the end of the f
 
 ## k. Interpret your results
 
-
+# Problem 3
