@@ -66,11 +66,20 @@ nests_clean <- nest_data |>
     # fills in NA to match with ant species NA
     TRUE ~ NA_character_
   ))
+#display 10 rows of object
+slice_sample(n = 10,
+nests_clean)
 ```
 
 ## b. Response variable
 
+The response variable is the occurrence of a bird nest of any species. The 0 indicates that there is no nest, and the 1 indicates that there is a bird's nest.
+
 ## c. Purpose of study
+
+Tree height is a continuous variable measured in meters. The research shows in the second paragraph of the results section that the taller the tree, the more likely  it is that a bird will have nested in in it.
+
+Ant species are shown to be a categorical variable, as shown at the end of the first paragraph in the Methods section of the research paper. The third paragraph of the results showed that trees inhabited by *C. mimosae* and *C. nigriceps* were more likely to contain nests.
 
 ## d. Table of models
 
