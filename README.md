@@ -12,24 +12,7 @@ Included as well is an example of running Kruskal-Wallis tests and creating repr
 
 ## Data and file information
 
-├───.gitignore
-
-├───ENVS-193DS_spring-2026_final.Rproj
-├───README.md
-│
-├───code
-│       Carnahan_final.pdf
-│       Carnahan_final.qmd
-│
-└───data
-    │   biking_data.csv
-    │   metadata
-    │   metadata.zip
-    │   nest_data_final.csv
-    │
-    └───__MACOSX
-            ._metadata
-
+```
 │   .gitignore
 │   ENVS-193DS_spring-2026_final.Rproj
 │   README.md
@@ -46,5 +29,6 @@ Included as well is an example of running Kruskal-Wallis tests and creating repr
     │
     └───__MACOSX
             ._metadata
+```
 
 ## Rendered output
