@@ -264,7 +264,7 @@ Height in the trees (cm) and ant species interact to predict the probability of 
 
 These relationships can be justified biologically speaking because birds mostly nest in trees with more aggressive ant populations (*C. nigriceps* and *C. mimosae*) to reduce predation of eggs and conceal them in denser cover, and higher up to avoid ground-dwelling predators such as snakes and raccoons.
 
-At 600cm, the probability of nesting is 0.20 (95% CI: [0.00, 0.99]) for trees with *C. sjostedti*, 0.74 (95% CI: [0.48, 0.90]) for trees with *C. mimosae*, and 1.00 (95% CI: [1.00, 1.00]) for trees with*C. nigriceps*.
+At 600cm, the probability of nesting is 0.20 (95% CI: [0.00, 0.99]) for trees with *C. sjostedti*, 0.74 (95% CI: [0.48, 0.90]) for trees with *C. mimosae*, and 1.00 (95% CI: [1.00, 1.00]) for trees with *C. nigriceps*.
 
 # Problem 3
 
@@ -288,7 +288,9 @@ The variables that I would use in this analysis are time spent biking (min), whi
 
 ## c. Check any assumptions and run your analysis
 
-Assumptions for a Kruskal-Wallis test, as observations were independent from each other, the independent variable is categorical, and the dependent variable is continuous.
+Assumptions for a Kruskal-Wallis test were met, as observations were independent from each other biking throughout the day over many weeks, the independent variable is categorical, and the dependent variable is continuous.
+
+However, it is worth mentioning that unequal sample sizes presented across class categories (1 class has 10 observations, while 4 classes has 1) creates limitations to the accuracy of any data outputs.
 
 ```{r}
 #| label: cleaning-personal-data
@@ -318,20 +320,30 @@ rstatix::kruskal_effsize(biking_time ~ factor(classes), data = bike_clean)
 ```{r}
 #| label: biking-figure
 
+# base layer: ggplot
 ggplot(data = bike_clean,
+       # x-variable: classes per day
+       # y-variable: time spent biking per day
+       # change colors dependent on number of classes
        aes(x = factor(classes),
            y = biking_time,
            color = factor(classes))) +
+  # first latera: geom boxplot
   geom_boxplot() +
+  # second layer: geom jitter to visualize individual data points
+  # set height to 0 to avoid vertically spread and y-value changes
+  # change size, horizontal spread, transparency, and shape of points
   geom_jitter(height = 0,
               width = 0.2,
               size = 2,
               alpha = 0.7,
               shape = 21) +
+  # determine individual colors for classes
   scale_color_manual(values = c("1" = "darkorange",
                                 "2" = "gold",
                                 "3" = "firebrick1",
                                 "4" = "lightsalmon3")) +
+  # relabel x-a and y-axes and add title
   labs(x = "Classes per Day",
        y = "Biking Time (min/day)",
        title = "Biking does not greatly differ based on number of classes") +
