@@ -202,7 +202,7 @@ ggplot(data = nests_clean,
             aes(x = x,
                 y = predicted,
                 color = ant_species),
-            linewidth = 2) +
+            linewidth = 1.5) +
   # third layer: geom ribbon
   # change transparency
   geom_ribbon(data = pred,
